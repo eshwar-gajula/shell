@@ -1,21 +1,21 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# Colors
-RED='\[\e[1;31m\]'
-GREEN='\[\e[1;32m\]'
-BLUE='\[\e[1;34m\]'
-CYAN='\[\e[1;36m\]'
-GRAY='\[\e[1;90m\]'
-WHITE='\[\e[0m\]'
+BASE="$HOME/.tpc"
 
-source $HOME/.ptshell/config/user.conf
+source "$BASE/config/user.conf"
+source "$BASE/core/target.sh"
+source "$BASE/core/session.sh"
 
-# Git branch
+R='\[\e[31m\]'
+G='\[\e[32m\]'
+B='\[\e[34m\]'
+C='\[\e[36m\]'
+W='\[\e[0m\]'
+
 git_branch() {
-    git rev-parse --abbrev-ref HEAD 2>/dev/null
+  git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
-# Prompt
 export PS1="
-${GREEN}[${RED}$USERNAME${GREEN}]${BLUE}:\w ${CYAN}\$(git_branch)${WHITE}
-${RED}➤ ${WHITE}"
+${G}[${R}$USERNAME${G}]${B}:\w ${C}T:\$(get_target) S:\$(get_session) \$(git_branch)${W}
+${R}➤ ${W}"

@@ -1,41 +1,65 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
+set -e
+
 clear
 
-echo "=================================="
-echo " TERMUX CUSTOMIZED SHELL INSTALLER"
-echo "=================================="
+echo "======================================"
+echo "   TPC-SHELL INSTALLER v1.0"
+echo "======================================"
 echo
 
-pkg update -y && pkg upgrade -y
+# Update
+pkg update -y
+pkg upgrade -y
 
-pkg install -y termux-api net-tools wireless-tools git
+# Dependencies
+pkg install -y \
+git \
+nmap \
+termux-api \
+openssh \
+net-tools
 
-mkdir -p $HOME/.ptshell/config
+# Main dirs
+BASE="$HOME/.tpc"
 
+mkdir -p "$BASE"/{core,config,data,recon,logs}
+
+# Ask name
 read -p "Enter your name: " USERNAME
 
-echo "USERNAME=$USERNAME" > $HOME/.ptshell/config/user.conf
+# Save config
+cat > "$BASE/config/user.conf" << EOF
+USERNAME="$USERNAME"
+EOF
 
 # Backup bashrc
-if [ -f $HOME/.bashrc ]; then
-    cp $HOME/.bashrc $HOME/.bashrc.backup
+if [ -f "$HOME/.bashrc" ]; then
+  cp "$HOME/.bashrc" "$HOME/.bashrc.backup"
 fi
 
-# New bashrc
-cat > $HOME/.bashrc << EOF
+# Install shell loader
+cat > "$HOME/.bashrc" << EOF
 
-# Pentester Shell Loader
-source \$HOME/.ptshell/boot.sh
-source \$HOME/.ptshell/prompt.sh
+# === TPC SHELL ===
+source $BASE/core/utils.sh
+source $BASE/core/target.sh
+source $BASE/core/session.sh
+source $BASE/core/recon.sh
+
+source $BASE/boot.sh
+source $BASE/prompt.sh
 
 EOF
 
 # Copy files
-cp boot.sh $HOME/.ptshell/
-cp prompt.sh $HOME/.ptshell/
+cp boot.sh prompt.sh "$BASE/"
+cp -r core "$BASE/"
 
-chmod +x $HOME/.ptshell/*.sh
+chmod +x "$BASE"/*.sh
+chmod +x "$BASE"/core/*.sh
 
 echo
-echo "Installed. Restart Termux."
+echo "[+] Installation complete."
+echo "[+] Restart Termux."

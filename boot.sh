@@ -1,85 +1,64 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# Load config
-source $HOME/.ptshell/config/user.conf
+BASE="$HOME/.tpc"
+
+source "$BASE/config/user.conf"
+source "$BASE/core/session.sh"
+source "$BASE/core/target.sh"
+
+# New session
+new_session
+SESSION=$(get_session)
 
 clear
 
 # Typing effect
-type_text() {
-    text="$1"
-    delay=0.04
-
-    for ((i=0; i<${#text}; i++)); do
-        printf "%s" "${text:$i:1}"
-        sleep $delay
-    done
-    echo
+type() {
+  for ((i=0;i<${#1};i++)); do
+    printf "%s" "${1:$i:1}"
+    sleep 0.03
+  done
+  echo
 }
 
-# Center text
-center() {
-    cols=$(tput cols)
-    printf "%*s\n" $(((${#1}+$cols)/2)) "$1"
-}
+type "Hello $USERNAME"
+sleep 0.5
 
-HELLO="Hello $USERNAME"
-
-center ""
-center "$HELLO"
-
-type_text "$HELLO"
-
-sleep 1
 clear
+echo "Getting system info..."
+sleep 0.5
 
-# Loading message
-echo "Getting device details..."
-sleep 0.7
-
-# Get info
-DATE=$(date +"%d %b %Y")
+# Info
+DATE=$(date +"%Y-%m-%d")
 TIME=$(date +"%H:%M:%S")
 
-# WiFi
-WIFI=$(termux-wifi-connectioninfo 2>/dev/null | grep ssid | cut -d '"' -f4)
+WIFI=$(termux-wifi-connectioninfo 2>/dev/null \
+| grep ssid | cut -d '"' -f4)
 
-if [ -z "$WIFI" ]; then
-    WIFI="Not Connected"
-fi
+[ -z "$WIFI" ] && WIFI="Disconnected"
 
-# VPN
-VPN=$(ip route | grep tun0 | awk '{print $1}')
-
-if [ -z "$VPN" ]; then
-    VPN="None"
-else
-    VPN="Active"
-fi
-
-# Area (basic from locale)
-AREA=$(getprop persist.sys.country 2>/dev/null)
-
-[ -z "$AREA" ] && AREA="Unknown"
+VPN=$(ip route | grep tun0 >/dev/null && echo Active || echo None)
 
 clear
 
-echo "======================================"
-echo "   TERMUX OPERATIONAL CONSOLE"
-echo "======================================"
-echo
+cat << EOF
 
-printf " User      : %s\n" "$USERNAME"
-printf " Date      : %s\n" "$DATE"
-printf " Time      : %s\n" "$TIME"
-printf " WiFi      : %s\n" "$WIFI"
-printf " VPN       : %s\n" "$VPN"
-printf " Region    : %s\n" "$AREA"
-printf " Arch      : %s\n" "$(uname -m)"
+==============================
+ TPC OPERATIONAL DASHBOARD
+==============================
 
-echo
-echo " Status    : Ready"
-echo "--------------------------------------"
-echo
+ User     : $USERNAME
+ Session  : $SESSION
+ Target   : $(get_target)
 
-sleep 0.5
+ Date     : $DATE
+ Time     : $TIME
+
+ WiFi     : $WIFI
+ VPN      : $VPN
+ Arch     : $(uname -m)
+
+ Status   : Online
+------------------------------
+
+EOF

@@ -1,20 +1,19 @@
-# Termux Pentester Shell
+# TPC Shell
 
-Professional custom shell for Android Termux.
+Professional custom shell for Termux.
 
 ## Features
 
-- Clean startup banner
-- Username system
-- Time and date
-- System info
-- Git-aware prompt
-- Backup support
+- Animated boot
+- Session tracking
+- Target memory
+- Auto recon
+- Clean prompt
 
-## Installation
+## Install
 
 ```bash
-pkg install git -y
+pkg install git
 git clone https://github.com/eshwargajula31/termux-pentester-shell
 cd termux-pentester-shell
 chmod +x install.sh
