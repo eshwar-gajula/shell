@@ -8,15 +8,14 @@ CYAN='\[\e[1;36m\]'
 GRAY='\[\e[1;90m\]'
 WHITE='\[\e[0m\]'
 
-# Load user
 source $HOME/.ptshell/config/user.conf
 
-# Show git branch if exists
-parse_git_branch() {
-    git branch 2>/dev/null | grep '\*' | sed 's/* //'
+# Git branch
+git_branch() {
+    git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
-# Custom prompt
+# Prompt
 export PS1="
-${GREEN}┌─[${RED}$USERNAME${GREEN}]─[${BLUE}\w${GREEN}]─[${CYAN}\$(parse_git_branch)${GREEN}]
-└─${RED}➤${WHITE} "
+${GREEN}[${RED}$USERNAME${GREEN}]${BLUE}:\w ${CYAN}\$(git_branch)${WHITE}
+${RED}➤ ${WHITE}"
