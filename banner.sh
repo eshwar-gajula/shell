@@ -2,27 +2,26 @@
 
 clear
 
-# Load user
+# Load user config
 source $HOME/.ptshell/config/user.conf
 
-# Matrix effect
-$HOME/.ptshell/matrix.sh &
+# Get time
+TIME=$(date +"%I:%M %p")
+DATE=$(date +"%d %B %Y")
 
-PID=$!
-sleep 4
-kill $PID
-
-clear
-
-# Time
-TIME=$(date +"%I:%M %p | %d-%m-%Y")
-
-# Welcome banner
-figlet "Welcome Back"
-toilet -f mono12 "$USERNAME"
+# Title
+figlet "Pentester"
 
 echo
-echo "Time : $TIME"
-echo "Status : Ready for Pentesting"
-echo "----------------------------------"
+toilet -f mono12 "Welcome Back $USERNAME"
 echo
+
+echo "Date   : $DATE"
+echo "Time   : $TIME"
+echo "System : Termux $(uname -m)"
+echo "Mode   : Offensive Security"
+echo "----------------------------------------"
+echo
+
+# Show system info (light)
+neofetch --off --disable gpu
